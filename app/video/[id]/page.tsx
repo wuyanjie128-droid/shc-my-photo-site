@@ -20,7 +20,7 @@ export default async function VideoDetailPage({
     .single();
 
   if (!video) {
-    return <div>视频不存在</div>;
+    return <div className="p-6">视频不存在</div>;
   }
 
   let hasPurchased = false;
@@ -46,15 +46,12 @@ export default async function VideoDetailPage({
         <p className="mt-4">视频处理中...</p>
       ) : (
         <>
-          <Player
-            playbackId={video.mux_playback_id}
-            hasPurchased={hasPurchased}
-          />
+          <Player playbackId={video.mux_playback_id} />
 
           {!hasPurchased && (
             <div className="mt-4 rounded border p-4">
               <p className="text-sm text-orange-500">
-                当前为预览（480p），购买后解锁高清
+                当前为预览模式，购买后解锁完整内容
               </p>
               <p className="mt-2 text-xl font-bold">￥{video.price}</p>
 
@@ -68,7 +65,7 @@ export default async function VideoDetailPage({
 
           {hasPurchased && (
             <div className="mt-4">
-              <p className="text-green-600">已购买 ✅ 高清播放</p>
+              <p className="text-green-600">已购买 ✅ 可继续观看</p>
 
               <a
                 href={`https://stream.mux.com/${video.mux_playback_id}.m3u8`}

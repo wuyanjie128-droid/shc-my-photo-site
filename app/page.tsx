@@ -4,18 +4,21 @@ import { createClient } from "@/lib/supabase/server";
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const { data: videos = [], error } = await supabase
+  const { data, error } = await supabase
     .from("videos")
     .select("*")
     .order("created_at", { ascending: false });
 
+  const videos = data ?? [];
+
   if (error) {
-    console.error(error);
+    console.error("加载视频失败:", error);
   }
 
   return (
     <main className="min-h-screen bg-gray-50 pb-20 text-black">
       <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
+        {/* 头部 */}
         <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl font-bold md:text-3xl">浏览 / 上传</h1>
@@ -37,6 +40,7 @@ export default async function HomePage() {
           </div>
         </header>
 
+        {/* 内容 */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {videos.length === 0 ? (
             <div className="rounded-2xl border bg-white p-6 text-gray-500">
@@ -48,15 +52,20 @@ export default async function HomePage() {
                 key={v.id}
                 className="overflow-hidden rounded-2xl border bg-white p-4 shadow-sm"
               >
+                {/* 预览占位 */}
                 <div className="flex h-48 items-center justify-center rounded-xl bg-black text-white">
                   低清预览
                 </div>
 
+                {/* 标题 */}
                 <h3 className="mt-3 text-lg font-semibold">{v.title}</h3>
+
+                {/* 描述 */}
                 <p className="mt-1 line-clamp-2 text-sm text-gray-500">
                   {v.description}
                 </p>
 
+                {/* 信息 */}
                 <div className="mt-3 flex items-center justify-between">
                   <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
                     {v.city}
@@ -64,6 +73,7 @@ export default async function HomePage() {
                   <span className="text-lg font-bold">￥{v.price}</span>
                 </div>
 
+                {/* 按钮 */}
                 <a
                   href={`/video/${v.id}`}
                   className="mt-4 inline-block rounded-xl bg-black px-4 py-2 text-white"
@@ -76,6 +86,7 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* 底部导航 */}
       <BottomNav />
     </main>
   );
