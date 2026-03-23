@@ -21,9 +21,11 @@ export default async function HomePage() {
         {/* 头部 */}
         <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl font-bold md:text-3xl">浏览 / 上传</h1>
+            <h1 className="text-2xl font-bold md:text-3xl">
+              SHC For Creators
+            </h1>
             <p className="mt-1 text-sm text-gray-500">
-              浏览视频内容，也可以发布你自己的作品
+              视频付费与创作者平台 · 上传内容并开始赚钱
             </p>
           </div>
 
@@ -40,7 +42,7 @@ export default async function HomePage() {
           </div>
         </header>
 
-        {/* 内容 */}
+        {/* 视频列表 */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {videos.length === 0 ? (
             <div className="rounded-2xl border bg-white p-6 text-gray-500">
