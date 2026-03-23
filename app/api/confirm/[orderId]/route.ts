@@ -25,7 +25,7 @@ export async function POST(
   }
 
   if (order.status === "paid") {
-    return NextResponse.redirect(`http://localhost:3000/video/${order.video_id}`, {
+    return NextResponse.redirect(new URL(`/video/${order.video_id}`, req.url), {
       status: 303,
     });
   }
@@ -77,7 +77,7 @@ export async function POST(
     });
   }
 
-  return NextResponse.redirect(`http://localhost:3000/video/${order.video_id}`, {
+  return NextResponse.redirect(new URL(`/video/${order.video_id}`, req.url), {
     status: 303,
   });
 }

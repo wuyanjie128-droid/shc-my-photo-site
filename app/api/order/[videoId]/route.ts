@@ -13,7 +13,7 @@ export async function POST(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.redirect("http://localhost:3000/login", {
+    return NextResponse.redirect(new URL("/login", req.url), {
       status: 303,
     });
   }
@@ -59,7 +59,7 @@ export async function POST(
     );
   }
 
-  return NextResponse.redirect(`http://localhost:3000/pay/${order.id}`, {
+  return NextResponse.redirect(new URL(`/pay/${order.id}`, req.url), {
     status: 303,
   });
 }

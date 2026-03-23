@@ -23,7 +23,7 @@ export async function POST(
     return NextResponse.json({ error: "提交失败" }, { status: 500 });
   }
 
-  return NextResponse.redirect(`http://localhost:3000/order-submitted/${id}`, {
+  return NextResponse.redirect(new URL(`/order-submitted/${id}`, req.url), {
     status: 303,
   });
 }
