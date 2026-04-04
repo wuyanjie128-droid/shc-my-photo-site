@@ -14,6 +14,8 @@ export default function UploadPage() {
   const [price, setPrice] = useState("");
   const [city, setCity] = useState("上海");
   const [file, setFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -73,9 +75,21 @@ export default function UploadPage() {
     }, 5000);
   };
 
+  const fileToDataUrl = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(new Error("封面读取失败"));
+      reader.readAsDataURL(file);
+    });
+
   const handleUpload = async () => {
     if (!file) {
       alert("请选择视频");
+      return;
+    }
+    if (!coverFile) {
+      alert("请选择封面图片");
       return;
     }
 
@@ -108,6 +122,8 @@ export default function UploadPage() {
 
       const uploadId = data.id;
 
+      const coverDataUrl = await fileToDataUrl(coverFile);
+
       // 2. 先插入数据库，状态 processing
       const { data: insertedVideo, error: insertError } = await supabase
         .from("videos")
@@ -121,6 +137,7 @@ export default function UploadPage() {
           full_url: "",
           mux_upload_id: uploadId,
           status: "processing",
+          coverURL: coverDataUrl,
         })
         .select()
         .single();
@@ -219,6 +236,35 @@ export default function UploadPage() {
             onChange={(e) => setFile(e.target.files?.[0] || null)}
             className="w-full rounded-xl border px-4 py-3"
           />
+          <div className="space-y-3">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const selected = e.target.files?.[0] || null;
+                setCoverFile(selected);
+                if (selected) {
+                  const objectUrl = URL.createObjectURL(selected);
+                  setCoverPreview(objectUrl);
+                } else {
+                  setCoverPreview("");
+                }
+              }}
+              className="w-full rounded-xl border px-4 py-3"
+            />
+
+            {coverPreview ? (
+              <img
+                src={coverPreview}
+                alt="封面预览"
+                className="h-48 w-full rounded-xl object-cover"
+              />
+            ) : (
+              <div className="flex h-48 items-center justify-center rounded-xl border border-dashed text-sm text-gray-500">
+                这里会显示封面预览
+              </div>
+            )}
+          </div>
 
           {loading && (
             <div className="rounded-xl border p-4">
