@@ -1,17 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const supabase = createClient();
-  const searchParams = useSearchParams();
-  const next = useMemo(() => searchParams.get("next") || "/me", [searchParams]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [nextPath, setNextPath] = useState("/me");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    setNextPath(params.get("next") || "/me");
+  }, []);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +35,7 @@ export default function LoginPage() {
     }
 
     alert("登录成功");
-    window.location.href = next;
+    window.location.href = nextPath;
   };
 
   return (
@@ -88,12 +92,13 @@ export default function LoginPage() {
         <div className="mt-5 text-sm text-gray-600">
           还没有账号？
           <a
-            href={`/register?next=${encodeURIComponent(next)}`}
+            href={`/register?next=${encodeURIComponent(nextPath)}`}
             className="ml-2 text-blue-600"
           >
             去注册
           </a>
         </div>
+
         <div className="mt-6 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-gray-700">
           <h2 className="text-sm font-semibold text-red-700">免责声明</h2>
           <div className="mt-3 space-y-2 leading-6">
